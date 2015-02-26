@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Demo Tilt Ball</string>
+    <string name="app_name">Demo Tilt Ball RL</string>
     <string name="setuptitletext">Demo Tilt Ball</string>
     <string name="paramlabelorderofcontroltext">Order of control</string>
     <string name="paramlabelgaintext">Gain</string>
