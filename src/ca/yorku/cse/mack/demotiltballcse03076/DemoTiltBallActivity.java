@@ -1,4 +1,5 @@
-package ca.yorku.cse.mack.demotiltball;
+package ca.yorku.cse.mack.demotiltballcse03076;
+
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,11 +15,15 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Surface;
 import android.view.WindowManager;
-/*
-*	Rohan Likhite CSE 4443
-*
-*/
 
+/**
+* DemoAndroid - with modifications by...
+*
+* Login ID - CSE03076
+* Student ID - 210635597
+* Last name - Likhite
+* First name(s) - Rohan
+*/
 public class DemoTiltBallActivity extends Activity implements SensorEventListener
 {
 	final static String MYDEBUG = "MYDEBUG"; // for Log.i messages

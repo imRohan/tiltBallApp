@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.yorku.cse.mack.demotiltball"
+    package="ca.yorku.cse.mack.demotiltballcse03076"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity
-            android:name=".DemoTiltBallSetup"
+            android:name="ca.yorku.cse.mack.demotiltballcse03076.DemoTiltBallSetup"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ca.yorku.cse.mack.demotiltball.DemoTiltBallActivity"
+            android:name="ca.yorku.cse.mack.demotiltballcse03076.DemoTiltBallActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >

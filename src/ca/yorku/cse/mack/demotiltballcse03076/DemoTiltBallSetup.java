@@ -1,6 +1,5 @@
-package ca.yorku.cse.mack.demotiltball;
+package ca.yorku.cse.mack.demotiltballcse03076;
 
-import ca.yorku.cse.mack.demotiltball.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,14 +7,24 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+/**
+* DemoAndroid - with modifications by...
+*
+* Login ID - CSE03076
+* Student ID - 210635597
+* Last name - Likhite
+* First name(s) - Rohan
+*/
+
 public class DemoTiltBallSetup extends Activity 
 {
-	private Spinner spinOrderOfControl, spinGain, spinPathMode, spinPathWidth;
+	private Spinner spinOrderOfControl, spinGain, spinPathMode, spinPathWidth, spinlapNum;
 
 	final String[] ORDER_OF_CONTROL = { "Velocity", "Position" }; // NOTE: do not change strings
 	final String[] GAIN = { "Very low", "Low", "Medium", "High", "Very high" };
 	final String[] PATH_TYPE = { "Square", "Circle", "Free" };
 	final String[] PATH_WIDTH = { "Narrow", "Medium", "Wide" };
+	final String[] NUM_LAPS = {"1", "2", "3", "4", "5"};
 
 	// somewhat arbitrary mappings for gain by order of control
 	final static int[] GAIN_ARG_POSITION_CONTROL = { 5, 10, 20, 40, 80 };
@@ -46,6 +55,11 @@ public class DemoTiltBallSetup extends Activity
 		ArrayAdapter<CharSequence> adapter4 = new ArrayAdapter<CharSequence>(this, R.layout.spinnerstyle, PATH_WIDTH);
 		spinPathWidth.setAdapter(adapter4);
 		spinPathWidth.setSelection(1); // medium
+		
+		spinlapNum = (Spinner) findViewById(R.id.paramlapNum);
+		ArrayAdapter<CharSequence> adapter5 = new ArrayAdapter<CharSequence>(this, R.layout.spinnerstyle, NUM_LAPS);
+		spinlapNum.setAdapter(adapter5);
+		spinlapNum.setSelection(1); // 1 Lap
 	}
 
 	/** Called when the "OK" button is pressed. */
@@ -63,13 +77,14 @@ public class DemoTiltBallSetup extends Activity
 		
 		String pathType = PATH_TYPE[spinPathMode.getSelectedItemPosition()];
 		String pathWidth = PATH_WIDTH[spinPathWidth.getSelectedItemPosition()];
-
+		String lapNums = NUM_LAPS[spinlapNum.getSelectedItemPosition()];
 		// bundle up parameters to pass on to activity
 		Bundle b = new Bundle();
 		b.putString("orderOfControl", orderOfControl);
 		b.putInt("gain", gain);
 		b.putString("pathType", pathType);
 		b.putString("pathWidth", pathWidth);
+		b.putString("totalLaps", lapNums);
 
 		// start experiment activity
 		Intent i = new Intent(getApplicationContext(), DemoTiltBallActivity.class);

@@ -1,6 +1,5 @@
-package ca.yorku.cse.mack.demotiltball;
+package ca.yorku.cse.mack.demotiltballcse03076;
 
-import ca.yorku.cse.mack.demotiltball.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,10 +9,21 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Vibrator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+
+/**
+* DemoAndroid - with modifications by...
+*
+* Login ID - CSE03076
+* Student ID - 210635597
+* Last name - Likhite
+* First name(s) - Rohan
+*/
 
 public class RollingBallPanel extends View
 {
+	final static String MYDEBUG = "MYDEBUG"; // for Log.i messages
 	final float DEGREES_TO_RADIANS = 0.0174532925f;
 	final int DEFAULT_BALL_DIAMETER = 10;
 	
@@ -32,6 +42,13 @@ public class RollingBallPanel extends View
 	final float PATH_WIDTH_NARROW = 2.0f; // ... x ball diameter
 	final float PATH_WIDTH_MEDIUM = 4.0f; // ... x ball diameter
 	final float PATH_WIDTH_WIDE = 8.0f; // ... x ball diameter
+	
+	//Check Laps
+	boolean lapStart = false;
+	boolean lapCheckOneBool = false;
+	boolean lapDirection = false;
+	int lapCount = 0;
+	String totalLaps;
 
 	int pathType;
 	float radiusOuter, radiusInner;
@@ -44,7 +61,7 @@ public class RollingBallPanel extends View
 	float screenWidth, screenHeight, scalingFactor;
 	int labelTextSize, statsTextSize, gap, offset;
 
-	RectF innerRectangle, outerRectangle, innerShadowRectangle, outerShadowRectangle, ballNow;
+	RectF innerRectangle, outerRectangle, innerShadowRectangle, outerShadowRectangle, ballNow, lineStart, lapArrow, lapCheckOne, lapDirectionCheck;
 	float pathWidth;
 	boolean touchFlag;
 	Vibrator vib;
@@ -118,6 +135,9 @@ public class RollingBallPanel extends View
 		pathWidth = PATH_WIDTH_MEDIUM * ballDiameter; // default
 		touchFlag = false;
 
+		lineStart = new RectF();
+		lapCheckOne  = new RectF();
+		lapDirectionCheck  = new RectF();
 		outerRectangle = new RectF();
 		innerRectangle = new RectF();
 		innerShadowRectangle = new RectF();
@@ -134,6 +154,11 @@ public class RollingBallPanel extends View
 	public void setOrderOfControl(String orderOfControlArg)
 	{
 		orderOfControl = orderOfControlArg;
+	}
+	
+	public void settotalLaps(String totalLapsArg)
+	{
+		totalLaps = totalLapsArg;
 	}
 
 	/*
@@ -202,12 +227,58 @@ public class RollingBallPanel extends View
 			++wallHits;
 		} else if (!ballTouchingLine() && touchFlag)
 			touchFlag = false;
+		
+		
+		 if(lapStart == false && lapCheckOneBool == false && RectF.intersects(ballNow,lineStart)){
+			lapStart = true;
+			Log.i(MYDEBUG, "Start LAP");
+			
+		}
+		
+		if(lapStart == true && lapCheckOneBool == false && RectF.intersects(ballNow,lapCheckOne)){
+			lapStart = true;
+			lapCheckOneBool = true;
+			Log.i(MYDEBUG, "Lap Check");
+		}
+		
+		if(lapStart == true && lapCheckOneBool == true && RectF.intersects(ballNow,lapDirectionCheck)){
+			lapDirection = true;
+		}
+		
+		if(lapStart == true && lapDirection == true && lapCheckOneBool == true && RectF.intersects(ballNow,lineStart)){
+			lapStart = true;
+			lapDirection = false;
+			lapCheckOneBool = false;
+			lapCount ++;
+			Log.i(MYDEBUG, "NEW LAP");
+		}
+		 
 
 		invalidate(); // force onDraw to redraw the screen with the ball in its new position
 	}
 
 	protected void onDraw(Canvas canvas)
 	{
+		//Lap Start
+		lineStart.left = outerRectangle.left;
+		lineStart.top = (float) (canvas.getHeight() * 0.5);
+		lineStart.right = innerRectangle.left;
+		lineStart.bottom = (float)(canvas.getHeight() * 0.5 + 2);
+		
+		//DirectionCheck
+		lapDirectionCheck.left = outerRectangle.left;
+		lapDirectionCheck.top = (float) (canvas.getHeight() * 0.5 - 5);
+		lapDirectionCheck.right = innerRectangle.left;
+		lapDirectionCheck.bottom = (float)(canvas.getHeight() * 0.5 + 2);
+		
+		//Lap Check
+		lapCheckOne.left = innerRectangle.right;
+		lapCheckOne.top = (float) (canvas.getHeight() * 0.5);
+		lapCheckOne.right = outerRectangle.right;
+		lapCheckOne.bottom = (float) (canvas.getHeight() * 0.5 + 2);
+		
+		
+		
 		// draw the paths
 		if (pathType == PATH_TYPE_SQUARE)
 		{
@@ -228,19 +299,31 @@ public class RollingBallPanel extends View
 			canvas.drawOval(outerRectangle, linePaint);
 			canvas.drawOval(innerRectangle, linePaint);
 		}
-
+		
+		
+		//Lap Start Line and Arror
+		canvas.drawRect(lineStart, linePaint);
+		canvas.drawLine(outerRectangle.left - 30, canvas.getHeight()/2 - 30, outerRectangle.left -30, canvas.getHeight()/2 + 40, linePaint);
+		canvas.drawLine(outerRectangle.left - 40, canvas.getHeight()/2 - 10, outerRectangle.left - 30, canvas.getHeight()/2 + 40, linePaint);
+		canvas.drawLine(outerRectangle.left - 20, canvas.getHeight()/2 - 10, outerRectangle.left - 30, canvas.getHeight()/2 + 40, linePaint);
+	
+		canvas.drawRect(lapCheckOne, linePaint);
+		canvas.drawRect(lapDirectionCheck, linePaint);
+		
 		// draw label
-		canvas.drawText("Demo Tilt Ball", 6, labelTextSize, labelPaint);
+		canvas.drawText("Demo Tilt Ball CSE03076", 6, labelTextSize, labelPaint);
 
 		// draw stats (pitch, roll, tilt angle, tilt magnitude)
 		if (pathType == PATH_TYPE_SQUARE || pathType == PATH_TYPE_CIRCLE)
 		{
-			canvas.drawText("Wall hits = " + wallHits, 6f, screenHeight - offset - 5f * (statsTextSize + gap),
-					statsPaint);
-
+			//canvas.drawText("Wall hits = " + wallHits, 6f, screenHeight - offset - 5f * (statsTextSize + gap),statsPaint);
+			
+			canvas.drawText("LAP: " + lapCount + "/" + totalLaps, 6f, screenHeight - offset - 5f * (statsTextSize + gap),statsPaint);
+			
 			canvas.drawText("-----------------", 6f, screenHeight - offset - 4f * (statsTextSize + gap), statsPaint);
 		}
 
+		/*
 		canvas.drawText("Tablet pitch (degrees) = " + trim(pitch, 2), 6f, screenHeight - offset - 3f
 				* (statsTextSize + gap), statsPaint);
 
@@ -252,9 +335,11 @@ public class RollingBallPanel extends View
 
 		canvas.drawText("Ball y = " + trim(yBallCenter, 2), 6f, screenHeight - offset - 0f * (statsTextSize + gap),
 				statsPaint);
+				*/
 
 		// draw the ball in its new location
-		canvas.drawBitmap(ball, xBall, yBall, null);
+		canvas.drawBitmap(ball, xBall, yBall, null); 
+		
 
 	} // end onDraw
 
@@ -315,6 +400,8 @@ public class RollingBallPanel extends View
 		outerRectangle.right = xCenter + radiusOuter;
 		outerRectangle.bottom = yCenter + radiusOuter;
 
+	
+		
 		// NOTE: path width is 4 x ball diameter
 		radiusInner = radiusOuter - pathWidth * ballDiameter;
 
@@ -358,6 +445,7 @@ public class RollingBallPanel extends View
 	// returns true if the ball is touching the line of the inner or outer square/circle
 	public boolean ballTouchingLine()
 	{
+			
 		if (pathType == PATH_TYPE_SQUARE)
 		{
 			ballNow.left = xBall;

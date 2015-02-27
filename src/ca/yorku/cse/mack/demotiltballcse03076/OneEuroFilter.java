@@ -1,4 +1,4 @@
-package ca.yorku.cse.mack.demotiltball;
+package ca.yorku.cse.mack.demotiltballcse03076;
 
 /**
  * OneEuroFilter - for smoothing accelerometer data
